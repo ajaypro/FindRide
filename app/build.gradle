@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
+
+    defaultConfig {
+        applicationId names.applicationId
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.versionCode
+        versionName versions.versionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://fake-poi-api.mytaxi.com/\"")
+        }
+        release {
+            buildConfigField("String", "BASE_URL", "\"https://fake-poi-api.mytaxi.com/\"")
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.appcompat:appcompat:${library.appCompat}"
+    implementation "androidx.core:core-ktx:${library.ktx}"
+    implementation "androidx.constraintlayout:constraintlayout:${library.constarintLayout}"
+    implementation "com.google.android.material:material:${library.material}"
+
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:${library.lifeCycle}"
+    kapt "androidx.lifecycle:lifecycle-compiler:${library.lifeCycle}"
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:${library.navigation}"
+    implementation "androidx.navigation:navigation-ui-ktx:${library.navigation}"
+    //Gson
+    implementation "com.google.code.gson:gson:${library.gson}"
+    //Picasso
+    implementation "com.squareup.picasso:picasso:${library.picasso}"
+    //Dagger
+    implementation "com.google.dagger:dagger:${library.dagger}"
+    kapt "com.google.dagger:dagger-compiler:${library.dagger}"
+    //network
+    implementation "com.squareup.okhttp3:logging-interceptor:${library.logging_interceptor}"
+    implementation "com.squareup.retrofit2:retrofit:${library.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${library.retrofit}"
+
+    //livedata
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${library.lifeCycle}"
+
+    //Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${library.kotlinx_coroutines_core}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library.kotlinx_coroutines_android}"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${library.retrofit2_kotlin_coroutines_adapter}"
+
+    //Test
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}

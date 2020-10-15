@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/taxi_nav"
+    app:startDestination="@+id/navigation_taxi">
+
+    <fragment
+        android:id="@+id/navigation_taxi"
+        android:name="com.deepak.mytaxi.ui.taxi.TaxiFragment"
+        android:label="@string/title_taxi"
+        tools:layout="@layout/fragment_taxi" >
+
+     <action
+        android:id="@+id/action_taxi_to_map"
+        app:destination="@id/map_destination"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+
+<!--        <argument-->
+<!--            android:name="@string/title_taxi"-->
+<!--            app:argType="" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/map_destination"
+        android:name="com.deepak.mytaxi.ui.map.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_map">
+
+    </fragment>
+</navigation>
