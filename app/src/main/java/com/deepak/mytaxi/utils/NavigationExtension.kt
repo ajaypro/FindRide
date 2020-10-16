@@ -2,6 +2,7 @@ package com.deepak.mytaxi.utils
 
 
 import android.content.Intent
+import android.util.Log
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.core.util.set
@@ -72,27 +73,30 @@ fun BottomNavigationView.setupWithNavController(
     // When a navigation item is selected
     setOnNavigationItemSelectedListener { item ->
         // Don't do anything if the state is state has already been saved.
+
+        Log.d("TAG", "brightDragon ## : ${item.itemId}")
+
         if (fragmentManager.isStateSaved) {
             false
         } else {
             val newlySelectedItemTag = graphIdToTagMap[item.itemId]
             if (selectedItemTag != newlySelectedItemTag) {
                 // Pop everything above the first fragment (the "fixed start destination")
-                fragmentManager.popBackStack(firstFragmentTag,
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                fragmentManager.popBackStack(
+                    firstFragmentTag,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
                 val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
                         as NavHostFragment
+
+
+                Log.d("TAG", "brightDragon ## : ${selectedFragment::class.java.simpleName}")
 
                 // Exclude the first fragment tag because it's always in the back stack.
                 if (firstFragmentTag != newlySelectedItemTag) {
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
                     fragmentManager.beginTransaction()
-                        .setCustomAnimations(
-                            R.anim.nav_default_enter_anim,
-                            R.anim.nav_default_exit_anim,
-                            R.anim.nav_default_pop_enter_anim,
-                            R.anim.nav_default_pop_exit_anim)
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
@@ -104,6 +108,12 @@ fun BottomNavigationView.setupWithNavController(
                             }
                         }
                         .addToBackStack(firstFragmentTag)
+                        .setCustomAnimations(
+                            R.anim.nav_default_enter_anim,
+                            R.anim.nav_default_exit_anim,
+                            R.anim.nav_default_pop_enter_anim,
+                            R.anim.nav_default_pop_exit_anim
+                        )
                         .setReorderingAllowed(true)
                         .commit()
                 }
@@ -158,7 +168,8 @@ private fun BottomNavigationView.setupDeepLinks(
         )
         // Handle Intent
         if (navHostFragment.navController.handleDeepLink(intent)
-            && selectedItemId != navHostFragment.navController.graph.id) {
+            && selectedItemId != navHostFragment.navController.graph.id
+        ) {
             this.selectedItemId = navHostFragment.navController.graph.id
         }
     }
@@ -169,6 +180,8 @@ private fun BottomNavigationView.setupItemReselected(
     fragmentManager: FragmentManager
 ) {
     setOnNavigationItemReselectedListener { item ->
+
+        Log.d("TAG", "brightDragon ## itemReselected : ${item.itemId}")
         val newlySelectedItemTag = graphIdToTagMap[item.itemId]
         val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
                 as NavHostFragment

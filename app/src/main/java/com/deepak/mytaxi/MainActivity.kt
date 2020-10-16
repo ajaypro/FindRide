@@ -8,10 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavArgument
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.deepak.mytaxi.data.model.Vehicle
 import com.deepak.mytaxi.data.model.Vehicles
 import com.deepak.mytaxi.data.remote.Networking
 import com.deepak.mytaxi.ui.SharedViewModel
@@ -34,15 +38,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setupViewModel()
+        setUpObservers()
 
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         }
-        setupViewModel()
-        setUpObservers()
 
-
-        //val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
@@ -54,33 +56,9 @@ class MainActivity : AppCompatActivity() {
         //bottomNavigationView.setupWithNavController(navController)
     }
 
-    private fun setupViewModel() {
-        sharedViewModel = ViewModelProvider(this,
-            ViewModelFactory (Networking.create(BuildConfig.BASE_URL, application.cacheDir, 10 * 1024 * 1024))
-        ).get(SharedViewModel::class.java)
-    }
 
-    private fun setUpObservers() {
-        sharedViewModel.getVehicles().observe(this, Observer {
-            it?.let { resource ->
-                when(resource.status) {
-                    Status.SUCCESS -> {
-                        progressBar.visibility = View.GONE
-                        resource.data?.let { vehicleList ->
-                            navigateToFragments(vehicleList)
-                        }
-                    }
-                    Status.ERROR -> {
-                        progressBar.visibility = View.GONE
-                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                    }
-                    Status.LOADING -> {
-                         progressBar.visibility = View.VISIBLE
-                    }
-                }
-            }
-        })
-    }
+
+
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
@@ -114,6 +92,35 @@ class MainActivity : AppCompatActivity() {
         return currentNavController?.value?.navigateUp() ?: false
     }
 
+    private fun setupViewModel() {
+        sharedViewModel = ViewModelProvider(this,
+            ViewModelFactory (Networking.create(BuildConfig.BASE_URL,
+                application.cacheDir, 10 * 1024 * 1024))
+        ).get(SharedViewModel::class.java)
+    }
+
+    private fun setUpObservers() {
+        sharedViewModel.getVehicles().observe(this, Observer {
+            it?.let { resource ->
+                when(resource.status) {
+                    Status.SUCCESS -> {
+                        progressBar.visibility = View.GONE
+                        resource.data?.let { vehicleList ->
+                            navigateToFragments(vehicleList)
+                        }
+                    }
+                    Status.ERROR -> {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    }
+                    Status.LOADING -> {
+                        progressBar.visibility = View.VISIBLE
+                    }
+                }
+            }
+        })
+    }
+
 //    override fun onSupportNavigateUp() = findNavController(R.id.nav_host_fragment).navigateUp()
 
     private fun navigateToFragments(vehicleList: Vehicles) {
@@ -134,12 +141,20 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
+
           val taxiBundle = Bundle()
           val poolBundle = Bundle()
         poolBundle.putParcelableArrayList (POOL, pool as ArrayList<out Parcelable>)
         taxiBundle.putParcelableArrayList (TAXI, taxi as ArrayList<out Parcelable>)
 
-              findNavController(R.id.nav_host_fragment).setGraph(R.navigation.taxi_navigation, taxiBundle)
+
+//        val navHostFragment = nav_host_fragment as NavHostFragment
+//        navHostFragment.navController.navInflater.apply {
+//            val taxiGraph = inflate(R.navigation.taxi_navigation)
+//            taxiGraph.addArgument(TAXI, taxi)
+//        }
+
+             findNavController(R.id.nav_host_fragment).setGraph(R.navigation.taxi_navigation, taxiBundle)
               findNavController(R.id.nav_host_fragment).setGraph(R.navigation.pool_navigation, poolBundle)
     }
 }
