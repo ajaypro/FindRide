@@ -1,18 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="4dp"
+    android:padding="@dimen/dimen_2_dp"
+    app:cardUseCompatPadding="false">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/location"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
 
+        <ImageView
+            android:layout_width="@dimen/dimen_50_dp"
+            android:layout_height="@dimen/dimen_50_dp"
+            android:id="@+id/fleet_type"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
+            android:layout_marginStart="@dimen/dimen_16_dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
+        <ImageView
+            android:id="@+id/location_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:baselineAlignBottom="true"
+            android:src="@drawable/ic_location"
+            app:layout_constraintStart_toEndOf="@id/fleet_type"
+            app:layout_constraintBaseline_toBaselineOf="@id/location"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:paddingEnd="@dimen/dimen_2_dp"
+            android:lineSpacingExtra="0.5dp"
+
+            android:padding="@dimen/dimen_2_dp"
+            app:layout_constraintStart_toEndOf="@id/location_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="value is great, h200345, frankfurt, hamburg"/>
+
+        <ImageView
+            android:id="@+id/heading_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:baselineAlignBottom="true"
+            android:src="@drawable/compass"
+            app:layout_constraintBaseline_toBaselineOf="@id/heading"
+            app:layout_constraintStart_toEndOf="@id/fleet_type" />
+
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/heading_icon"
+            app:layout_constraintTop_toBottomOf="@id/location"
+            tools:text="North-west" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

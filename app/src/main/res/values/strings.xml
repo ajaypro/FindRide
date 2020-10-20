@@ -3,4 +3,7 @@
     <string name="title_taxi">Taxi</string>
     <string name="title_pool">Pool</string>
     <string name="title_map">Map</string>
+    <string name="taxi">Taxi</string>
+    <string name="pool">Pooling</string>
+    <string name="map">Map</string>
 </resources>

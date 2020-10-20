@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.deepak.mytaxi.R
+import com.deepak.mytaxi.TAXI
 import com.deepak.mytaxi.data.model.Vehicle
+import com.deepak.mytaxi.utils.getDirection
 import kotlinx.android.synthetic.main.item_vehicle.view.*
 
 class VehicleListAdapter : ListAdapter<Vehicle, VehicleListAdapter.VehicleViewHolder>(VehicleDiffCallback())  {
@@ -27,6 +29,8 @@ class VehicleListAdapter : ListAdapter<Vehicle, VehicleListAdapter.VehicleViewHo
         this.listener = listener
     }
 
+    fun getLocation(address: String?): String = address ?: ""
+
 //    fun updateData(newItems: ArrayList<Vehicle>) {
 //        vehicles.clear()
 //        vehicles.addAll(newItems)
@@ -42,7 +46,15 @@ class VehicleListAdapter : ListAdapter<Vehicle, VehicleListAdapter.VehicleViewHo
 //        private val container = view.item_vehicle_container!!
 
         fun bindView(vehicle: Vehicle) {
-              itemView.location.text = vehicle.heading.toString().plus(vehicle.fleetType).plus(vehicle.id)
+            if(vehicle.isTaxiOrPool(vehicle.fleetType)) {
+                itemView.fleet_type.setImageResource(R.drawable.taxi)
+                itemView.location.text = vehicle.coordinate.addressFromLatLong
+            } else {
+                itemView.fleet_type.setImageResource(R.drawable.pool)
+                itemView.location.text = vehicle.coordinate.addressFromLatLong
+            }
+               itemView.heading.text = getDirection(vehicle.heading)
+
 //            id.text = vehicle.id.toString()
 //            fleetType.text = vehicle.fleetType?.toUpperCase()
 //            heading.text = vehicle.heading.toString()
@@ -64,6 +76,8 @@ class VehicleListAdapter : ListAdapter<Vehicle, VehicleListAdapter.VehicleViewHo
 //            }
         }
     }
+
+
 }
 
 class VehicleDiffCallback: DiffUtil.ItemCallback<Vehicle> () {

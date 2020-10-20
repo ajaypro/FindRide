@@ -16,4 +16,5 @@ class VehicleRepository(private val networkService: NetworkService) {
 
        return  networkService.getCoordinates(queryMap)
     }
+
 }

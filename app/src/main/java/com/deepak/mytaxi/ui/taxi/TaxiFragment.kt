@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.deepak.mytaxi.MainActivity
 import com.deepak.mytaxi.R
+import com.deepak.mytaxi.TAXI
 import com.deepak.mytaxi.data.model.Vehicle
 import com.deepak.mytaxi.ui.VehicleListAdapter
 import kotlinx.android.synthetic.main.fragment_taxi.*
@@ -16,7 +18,21 @@ class TaxiFragment : Fragment() {
 
     lateinit var vehicleListAdapter: VehicleListAdapter
 
-    lateinit var taxiList: ArrayList<Vehicle>
+    var taxiList: ArrayList<Vehicle>? = null
+
+    var taxiLocation: String? = null
+
+    companion object {
+
+        const val TAG = "TaxiFragment"
+
+        fun newInstance(): TaxiFragment {
+            val args = Bundle()
+            val fragment = TaxiFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -24,25 +40,26 @@ class TaxiFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
 
-        taxiList = requireArguments().getParcelableArrayList<Vehicle>("taxi") as ArrayList<Vehicle>
-        vehicleListAdapter = VehicleListAdapter()
+        (activity as MainActivity).setActionBar(getString(R.string.taxi))
 
-        vehicleListAdapter.submitList(taxiList)
-
-        val root = inflater.inflate(R.layout.fragment_taxi, container, false)
-
-        return root
+        return inflater.inflate(R.layout.fragment_taxi, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
         progressBar.visibility = View.GONE
+
+       taxiList = arguments?.getParcelableArrayList<Vehicle>(TAXI)
+        taxiLocation = arguments?.getString("address")
+
+        vehicleListAdapter = VehicleListAdapter()
+        vehicleListAdapter.submitList(taxiList)
+
         taxiView.apply {
             adapter = vehicleListAdapter
             layoutManager = LinearLayoutManager(activity)
             setHasFixedSize(true)
         }
-
-
     }
 }

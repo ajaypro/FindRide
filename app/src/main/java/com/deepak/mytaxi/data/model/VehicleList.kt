@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Vehicles(
 
-    val poiList: ArrayList<Vehicle>
+    val poiList: List<Vehicle>
 
 ): Parcelable
 
@@ -24,9 +24,8 @@ data class Vehicle(
     val fleetType: String = "",
 
     @SerializedName("heading")
-    val heading: Double = 0.0,
+    val heading: Double = 0.0
 
-    val isTaxi: Boolean
 ): Parcelable {
 
     fun isTaxiOrPool(fleetType: String) =  fleetType == "TAXI"
@@ -39,5 +38,8 @@ data class Coordinate(
     val latitude: Double = 0.0,
 
     @SerializedName("longitude")
-    val longitude: Double = 0.0
+    val longitude: Double = 0.0,
+
+    /// user defined added data variable for showing address wherever we need to show
+    var addressFromLatLong: String = ""
 ): Parcelable
