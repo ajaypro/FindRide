@@ -29,7 +29,6 @@ object Networking {
                     .build()
             )
             .addConverterFactory(GsonConverterFactory.create())
-           // .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(NetworkService::class.java)
     }

@@ -3,12 +3,31 @@ package com.deepak.mytaxi.utils
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import android.os.Bundle
+import androidx.collection.ArrayMap
+import androidx.fragment.app.Fragment
 import com.deepak.mytaxi.data.model.Coordinate
+import com.deepak.mytaxi.data.model.Vehicle
+import com.deepak.mytaxi.data.remote.HamburgLocationBounds
+import com.deepak.mytaxi.ui.map.MapsFragment
+import com.deepak.mytaxi.utils.KeyConstants.VEHICLEDATA
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.roundToInt
+
+
+fun getQueryMap(): ArrayMap<String, Double> {
+
+    val queryMap: ArrayMap<String, Double> = ArrayMap()
+    queryMap["p1Lat"] = HamburgLocationBounds.LAT_1.value
+    queryMap["p1Lon"] = HamburgLocationBounds.LON_1.value
+    queryMap["p2Lat"] = HamburgLocationBounds.LAT_2.value
+    queryMap["p2Lon"] = HamburgLocationBounds.LON_2.value
+
+    return queryMap
+}
 
 
 fun getDirection(angle: Double): String {
@@ -27,6 +46,10 @@ fun getDirection(angle: Double): String {
 
     return directions[((data / 45) % 7).roundToInt()]
 }
+
+/**
+ * Coroutine exception handler used as this call would be made from lifecyclescope launch{} from mainactivity
+ */
 
 val handler = CoroutineExceptionHandler { _, exception ->
     println("CoroutineExceptionHandler got $exception")

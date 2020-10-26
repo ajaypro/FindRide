@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardElevation="4dp"
+    android:layout_margin="8dp"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="4dp"
     android:padding="@dimen/dimen_2_dp"
     app:cardUseCompatPadding="false">
 
@@ -13,6 +15,7 @@
         android:layout_height="match_parent"
         android:paddingTop="8dp"
         android:paddingBottom="16dp">
+
 
         <ImageView
             android:layout_width="@dimen/dimen_50_dp"
@@ -23,6 +26,18 @@
             android:layout_marginStart="@dimen/dimen_16_dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView style="@style/AppTheme.Body2"
+            android:textColor="@color/colorCarModel"
+            android:textSize="@dimen/dimen_16_sp"
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            app:layout_constraintBottom_toTopOf="@id/location"
+            app:layout_constraintStart_toEndOf="@id/fleet_type"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text ="Tesla Model Y" />
 
         <ImageView
             android:id="@+id/location_icon"
@@ -36,12 +51,13 @@
             app:layout_constraintBaseline_toBaselineOf="@id/location"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <TextView style="@style/AppTheme.Body2"
             android:id="@+id/location"
+            android:textColor="#4e504e"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="14dp"
             android:paddingEnd="@dimen/dimen_2_dp"
             android:lineSpacingExtra="0.5dp"
 
@@ -61,7 +77,10 @@
             app:layout_constraintBaseline_toBaselineOf="@id/heading"
             app:layout_constraintStart_toEndOf="@id/fleet_type" />
 
-        <TextView
+        <TextView style="@style/AppTheme.Body2"
+            android:textColor="@color/colorHeading"
+            android:textSize="@dimen/dimen_14_sp"
+            android:textAllCaps="true"
             android:id="@+id/heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -72,4 +91,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>

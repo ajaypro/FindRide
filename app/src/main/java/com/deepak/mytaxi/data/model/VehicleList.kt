@@ -28,6 +28,11 @@ data class Vehicle(
 
 ): Parcelable {
 
+    fun getVehicleModel(): String = arrayOf("Tesla Model 3", "VW polo", "VW Beetle",
+        "Lamborghini", "Benz C Class", "Toyota Cyris", "Honda Civic"," Honda Accord", "Bentley", "Porche", "Audi A4", "BMW", "Opel Mass", "Rolls-Royce","Aston Martin", "Mclaren"
+    ,"Land Rover", "Jaguar", "Mini-cooper", "Ferrari", "Volvo", "Range-Rover").random()
+
+
     fun isTaxiOrPool(fleetType: String) =  fleetType == "TAXI"
 
 }

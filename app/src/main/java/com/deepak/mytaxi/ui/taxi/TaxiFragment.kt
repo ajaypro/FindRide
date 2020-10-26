@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deepak.mytaxi.MainActivity
 import com.deepak.mytaxi.R
-import com.deepak.mytaxi.TAXI
 import com.deepak.mytaxi.data.model.Vehicle
+import com.deepak.mytaxi.ui.VehicleClickListener
 import com.deepak.mytaxi.ui.VehicleListAdapter
-import kotlinx.android.synthetic.main.fragment_taxi.*
+import com.deepak.mytaxi.utils.Event
+import com.deepak.mytaxi.utils.KeyConstants.TAXI
+import kotlinx.android.synthetic.main.fragment_vehicle.*
 import kotlinx.android.synthetic.main.progress_layout.*
 
 class TaxiFragment : Fragment() {
@@ -42,24 +44,37 @@ class TaxiFragment : Fragment() {
 
         (activity as MainActivity).setActionBar(getString(R.string.taxi))
 
-        return inflater.inflate(R.layout.fragment_taxi, container, false)
+        vehicleListAdapter = VehicleListAdapter( VehicleClickListener { vehicle ->
+
+            (activity as MainActivity).mainViewModel.apply {
+                selectedVehicle.postValue(Event(vehicle))
+                onNavigateToMap()
+            }
+        })
+
+        taxiList = arguments?.getParcelableArrayList<Vehicle>(TAXI)
+
+        vehicleListAdapter.submitList(taxiList)
+
+        return inflater.inflate(R.layout.fragment_vehicle, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         progressBar.visibility = View.GONE
 
-       taxiList = arguments?.getParcelableArrayList<Vehicle>(TAXI)
-        taxiLocation = arguments?.getString("address")
-
-        vehicleListAdapter = VehicleListAdapter()
-        vehicleListAdapter.submitList(taxiList)
-
-        taxiView.apply {
+        vehicleView.apply {
             adapter = vehicleListAdapter
             layoutManager = LinearLayoutManager(activity)
             setHasFixedSize(true)
         }
+
     }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//
+//    }
 }

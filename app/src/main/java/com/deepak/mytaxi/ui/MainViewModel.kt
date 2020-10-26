@@ -1,31 +1,30 @@
 package com.deepak.mytaxi.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.deepak.mytaxi.data.model.Vehicle
 import com.deepak.mytaxi.data.remote.Resource
 import com.deepak.mytaxi.data.repository.VehicleRepository
 import com.deepak.mytaxi.utils.Event
-import com.deepak.mytaxi.utils.getLocation
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-class SharedViewModel(private val vehicleRepository: VehicleRepository, application: Application): AndroidViewModel(application) {
-
-    //private val context = getApplication<Application>().applicationContext
+class MainViewModel(private val vehicleRepository: VehicleRepository): ViewModel() {
 
     /**
      * Livedata for Navigation
      */
+
     val taxiNavigation =  MutableLiveData<Event<Boolean>>()
     val poolNavigation = MutableLiveData<Event<Boolean>>()
     val mapNavigation = MutableLiveData<Event<Boolean>>()
 
+    val navigateToMapFragment: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val selectedVehicle: MutableLiveData<Event<Vehicle>> = MutableLiveData()
 
+    fun onNavigateToMap() {
+        navigateToMapFragment.postValue(Event(true))
+    }
 
     init {
         taxiNavigation.postValue(Event(true))
@@ -51,8 +50,6 @@ class SharedViewModel(private val vehicleRepository: VehicleRepository, applicat
                emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
           }
      }
-
-
 
 
 }

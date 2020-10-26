@@ -1,11 +1,16 @@
 package com.deepak.mytaxi.utils
 
-interface KeyConstants {
+/**
+ * Using object class for constants rather than companion object to avoid getters() & setters() been genereted to access
+ * the properties
+ */
 
-        companion object {
-            val VEHICLE_DATA = "vehicle_data"
-            val VEHICALE_TYPE_TAXI = "TAXI"
-            val VEHICALE_TYPE_POOLING = "POOLING"
-            val NO_ADDRESS_FOUND = "NO ADDRESS FOUND..."
+object KeyConstants {
+
+    const val NO_ADDRESS_FOUND = "NO ADDRESS FOUND..."
+    const val TAXI = "TAXI"
+    const val POOL = "POOLING"
+    const val MAP = "map"
+    const val VEHICLEDATA = "vehicledata"
+
         }
-}

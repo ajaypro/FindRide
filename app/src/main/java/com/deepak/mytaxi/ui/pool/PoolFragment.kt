@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deepak.mytaxi.MainActivity
-import com.deepak.mytaxi.POOL
 import com.deepak.mytaxi.R
 import com.deepak.mytaxi.data.model.Vehicle
+import com.deepak.mytaxi.ui.VehicleClickListener
 import com.deepak.mytaxi.ui.VehicleListAdapter
-import kotlinx.android.synthetic.main.fragment_pool.*
+import com.deepak.mytaxi.utils.Event
+import com.deepak.mytaxi.utils.KeyConstants.POOL
+import kotlinx.android.synthetic.main.fragment_vehicle.*
 import kotlinx.android.synthetic.main.progress_layout.*
 
 class PoolFragment : Fragment() {
@@ -40,24 +42,44 @@ class PoolFragment : Fragment() {
 
         (activity as MainActivity).setActionBar(getString(R.string.pool))
 
-        return inflater.inflate(R.layout.fragment_pool, container, false)
-    }
+        vehicleListAdapter = VehicleListAdapter( VehicleClickListener { vehicle ->
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        progressBar.visibility = View.GONE
+            (activity as MainActivity).mainViewModel.apply {
+                selectedVehicle.postValue(Event(vehicle))
+                onNavigateToMap()
+            }
+        })
 
         poolList = arguments?.getParcelableArrayList<Vehicle>(POOL)
-        vehicleListAdapter = VehicleListAdapter()
 
         vehicleListAdapter.submitList(poolList)
 
-        poolView.apply {
+        return inflater.inflate(R.layout.fragment_vehicle, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        progressBar.visibility = View.GONE
+
+        vehicleView.apply {
             adapter = vehicleListAdapter
             layoutManager = LinearLayoutManager(activity)
             setHasFixedSize(true)
         }
-
     }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//
+//
+//    }
+
+//    fun navigateToMap(vehicle: Vehicle) {
+//         val bundle = Bundle()
+//        val mapFragment = MapsFragment()
+//        bundle.putParcelable(VEHICLEDATA, vehicle)
+//        mapFragment.arguments = bundle
+//    }
 }

@@ -1,6 +1,7 @@
 package com.deepak.mytaxi
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -11,24 +12,27 @@ import androidx.lifecycle.lifecycleScope
 import com.deepak.mytaxi.data.model.Vehicle
 import com.deepak.mytaxi.data.model.Vehicles
 import com.deepak.mytaxi.data.remote.Networking
-import com.deepak.mytaxi.ui.SharedViewModel
-import com.deepak.mytaxi.ui.ViewModelFactory
-import com.deepak.mytaxi.ui.map.MapFragment
+import com.deepak.mytaxi.ui.MainViewModel
+import com.deepak.mytaxi.ui.MainViewModelFactory
+import com.deepak.mytaxi.ui.map.MapsFragment
 import com.deepak.mytaxi.ui.pool.PoolFragment
 import com.deepak.mytaxi.ui.taxi.TaxiFragment
+import com.deepak.mytaxi.utils.KeyConstants.MAP
+import com.deepak.mytaxi.utils.KeyConstants.POOL
+import com.deepak.mytaxi.utils.KeyConstants.TAXI
 import com.deepak.mytaxi.utils.Status
+import com.deepak.mytaxi.utils.getLocation
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.progress_layout.*
-import com.deepak.mytaxi.utils.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-const val TAXI = "taxi"
-const val POOL = "pool"
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var sharedViewModel: SharedViewModel
+    lateinit var mainViewModel: MainViewModel
 
     lateinit var vehicleAddress: ArrayList<Vehicle>
 
@@ -48,21 +52,21 @@ class MainActivity : AppCompatActivity() {
         actionBar?.title = title
     }
 
-    fun setupView(savedInstanceState: Bundle?) {
+    private fun setupView(savedInstanceState: Bundle?) {
         bottomnavigationview.run {
             //itemIconTintList = null
             setOnNavigationItemSelectedListener {
                 when (it.itemId) {
                     R.id.taxi_nav -> {
-                        sharedViewModel.onTaxiSelected()
+                        mainViewModel.onTaxiSelected()
                         true
                     }
                     R.id.pool_nav -> {
-                        sharedViewModel.onPoolSelected()
+                        mainViewModel.onPoolSelected()
                         true
                     }
                     R.id.map_nav -> {
-                        sharedViewModel.onMapSelected()
+                        mainViewModel.onMapSelected()
                         true
                     }
                     else -> false
@@ -72,13 +76,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        sharedViewModel = ViewModelProvider(this,
-            ViewModelFactory (Networking.create(BuildConfig.BASE_URL, application.cacheDir, 10 * 1024 * 1024), this.application)
-        ).get(SharedViewModel::class.java)
+        mainViewModel = ViewModelProvider(this,
+            MainViewModelFactory (Networking.create(BuildConfig.BASE_URL, application.cacheDir, 10 * 1024 * 1024))
+        ).get(MainViewModel::class.java)
     }
 
     private fun setUpObservers() {
-        sharedViewModel.getVehicles().observe(this, Observer {
+        mainViewModel.getVehicles().observe(this, Observer {
             it?.let { resource ->
                 when(resource.status) {
                     Status.SUCCESS -> {
@@ -109,37 +113,22 @@ class MainActivity : AppCompatActivity() {
 
             val (taxi, pool) = finalVehicleList.partition { it.isTaxiOrPool(it.fleetType) }
 
-            sharedViewModel.taxiNavigation.observe(this@MainActivity, Observer {
+            mainViewModel.taxiNavigation.observe(this, Observer {
                 it.getIfNotHandled()?.run { showTaxi(taxi as ArrayList<Vehicle>) }
             })
 
-            sharedViewModel.poolNavigation.observe(this@MainActivity, Observer {
+            mainViewModel.poolNavigation.observe(this, Observer {
                 it.getIfNotHandled()?.run { showPool(pool as ArrayList<Vehicle>) }
             })
 
-            sharedViewModel.mapNavigation.observe(this@MainActivity, Observer {
-                it.getIfNotHandled()?.run { showMap(any = "Maps") }
+            mainViewModel.mapNavigation.observe(this, Observer {
+                it.getIfNotHandled()?.run { showMap(finalVehicleList) }
             })
 
+           mainViewModel.navigateToMapFragment.observe( this, Observer {
+               it.getIfNotHandled()?.run { bottomnavigationview.selectedItemId = R.id.map_nav }
+               })
 
-//        val taxiList = ArrayList<Vehicle>()
-//        val poolList = ArrayList<Vehicle>()
-//        vehicleList.forEach {
-//            if (it.fleetType == "TAXI"){
-//                taxiList.add(it)
-//            } else {
-//                poolList.add(it)
-//            }
-//        }
-
-
-//          val taxiBundle = Bundle()
-//          val poolBundle = Bundle()
-//        poolBundle.putParcelableArrayList (POOL, pool as ArrayList<out Parcelable>)
-//        taxiBundle.putParcelableArrayList (TAXI, taxi as ArrayList<out Parcelable>)
-
-             //findNavController(R.id.fragmentcontainer).setGraph(R.navigation.taxi_navigation, taxiBundle)
-              //findNavController(R.id.fragmentcontainer).setGraph(R.navigation.pool_navigation, poolBundle)
     }
 
 
@@ -197,22 +186,22 @@ class MainActivity : AppCompatActivity() {
         activeFragment = fragment
     }
 
-    private fun showMap(any: Any) {
-        if (activeFragment is MapFragment) return
+    private fun showMap(vehicleList: ArrayList<Vehicle>) {
+        if (activeFragment is MapsFragment) return
 
         val fragmentTransaction = supportFragmentManager.beginTransaction()
 
-        var fragment = supportFragmentManager.findFragmentByTag(MapFragment.TAG) as MapFragment?
+        var fragment = supportFragmentManager.findFragmentByTag(MapsFragment.TAG) as MapsFragment?
 
 
         if (fragment == null) {
-            fragment = MapFragment.newInstance()
+            fragment = MapsFragment.newInstance()
 
-//            val poolBundle = Bundle()
-//            poolBundle.putParcelableArrayList (POOL, pool as ArrayList<out Parcelable>)
-//            fragment.arguments = poolBundle
+            val mapBundle = Bundle()
+            mapBundle.putParcelableArrayList (MAP, vehicleList as ArrayList<out Parcelable>)
+            fragment.arguments = mapBundle
 
-            fragmentTransaction.add(R.id.fragmentcontainer, fragment, MapFragment.TAG)
+            fragmentTransaction.add(R.id.fragmentcontainer, fragment, MapsFragment.TAG)
         } else {
             fragmentTransaction.show(fragment)
         }
@@ -224,7 +213,7 @@ class MainActivity : AppCompatActivity() {
         activeFragment = fragment
     }
 
-    suspend fun getAddress(vehicleList: ArrayList<Vehicle>, coroutineContext: CoroutineContext): ArrayList<Vehicle> {
+    private suspend fun getAddress(vehicleList: ArrayList<Vehicle>, coroutineContext: CoroutineContext): ArrayList<Vehicle> {
 
         return withContext(coroutineContext) {
             vehicleListWithLocation(

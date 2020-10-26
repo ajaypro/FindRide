@@ -46,16 +46,13 @@ dependencies {
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:${library.lifeCycle}"
     kapt "androidx.lifecycle:lifecycle-compiler:${library.lifeCycle}"
-    //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:${library.navigation}"
-    implementation "androidx.navigation:navigation-ui-ktx:${library.navigation}"
+
+    //Map
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
     //Gson
     implementation "com.google.code.gson:gson:${library.gson}"
-    //Picasso
-    implementation "com.squareup.picasso:picasso:${library.picasso}"
-    //Dagger
-    implementation "com.google.dagger:dagger:${library.dagger}"
-    kapt "com.google.dagger:dagger-compiler:${library.dagger}"
+
     //network
     implementation "com.squareup.okhttp3:logging-interceptor:${library.logging_interceptor}"
     implementation "com.squareup.retrofit2:retrofit:${library.retrofit}"
@@ -69,10 +66,15 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library.kotlinx_coroutines_android}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${library.lifeCycle}"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:${library.lifeCycle}"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${library.retrofit2_kotlin_coroutines_adapter}"
 
     //Test
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
+    debugImplementation 'androidx.fragment:fragment-testing:1.2.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
+    //androidTestImplementation 'androidx.test:runner:1.3.0'
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
 }
