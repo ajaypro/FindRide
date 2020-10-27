@@ -60,7 +60,6 @@
             android:layout_marginTop="14dp"
             android:paddingEnd="@dimen/dimen_2_dp"
             android:lineSpacingExtra="0.5dp"
-
             android:padding="@dimen/dimen_2_dp"
             app:layout_constraintStart_toEndOf="@id/location_icon"
             app:layout_constraintTop_toTopOf="parent"

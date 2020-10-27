@@ -6,5 +6,5 @@
     <string name="taxi">Taxi</string>
     <string name="pool">Pooling</string>
     <string name="map">Map</string>
-    <string name="error_no_vehicles">Sorry, we could not found any vehicle in Hamburg area. Please try again later</string>
+    <string name="error_no_vehicles">Sorry, There are no vehicles in Hamburg area. Please try again later</string>
 </resources>

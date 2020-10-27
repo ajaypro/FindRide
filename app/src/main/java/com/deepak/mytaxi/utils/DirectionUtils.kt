@@ -3,21 +3,18 @@ package com.deepak.mytaxi.utils
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
-import android.os.Bundle
 import androidx.collection.ArrayMap
-import androidx.fragment.app.Fragment
 import com.deepak.mytaxi.data.model.Coordinate
-import com.deepak.mytaxi.data.model.Vehicle
 import com.deepak.mytaxi.data.remote.HamburgLocationBounds
-import com.deepak.mytaxi.ui.map.MapsFragment
-import com.deepak.mytaxi.utils.KeyConstants.VEHICLEDATA
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.roundToInt
 
-
+/**
+ * Query parmeters for retrofit network call
+ */
 fun getQueryMap(): ArrayMap<String, Double> {
 
     val queryMap: ArrayMap<String, Double> = ArrayMap()
@@ -29,7 +26,9 @@ fun getQueryMap(): ArrayMap<String, Double> {
     return queryMap
 }
 
-
+/**
+ *  Converting heading degree to directions
+ */
 fun getDirection(angle: Double): String {
     val directions = arrayOf(
         "North",
@@ -60,7 +59,7 @@ suspend fun getLocation(
     context: Context,
     coroutineScope: CoroutineScope
 ): String {
-    var strAddress = ""
+
     var addressList: List<Address>
     val geocoder = Geocoder(context, Locale.getDefault())
 
@@ -69,32 +68,20 @@ suspend fun getLocation(
     }
 
 
-    if (addressList.isNotEmpty()) {
+    return if (addressList.isNotEmpty()) {
 
-        val returnedAddress = addressList[0]
-        val strReturnedAddress = StringBuilder("")
+         val returnedAddress = addressList[0]
+         val strReturnedAddress = StringBuilder("")
 
-        for (i in 0..returnedAddress.maxAddressLineIndex) {
-            strReturnedAddress.append(
-                returnedAddress.getAddressLine(i).run { getfinalAddress(this) }).append("\n")
-        }
-        strAddress = strReturnedAddress.toString()
+         for (i in 0..returnedAddress.maxAddressLineIndex) {
+             strReturnedAddress.append(
+                 returnedAddress.getAddressLine(i).run { getfinalAddress(this) }).append("\n")
+         }
+         strReturnedAddress.toString()
 
-//                addressList.forEach {
-//                    location = it.apply {
-//                        strReturnedAddress
-//                            .append(getValue(subAdminArea)).append(" ,")
-//                            .append(getValue(subLocality)).append(" ,")
-//                            .append(locality)
-//                            .append(adminArea)
-//                    }
-//                    strAddress = location.toString()
-//                }
-
-    } else {
-        strAddress = KeyConstants.NO_ADDRESS_FOUND
-    }
-    return strAddress
+     } else {
+         KeyConstants.NO_ADDRESS_FOUND
+     }
 }
 
 

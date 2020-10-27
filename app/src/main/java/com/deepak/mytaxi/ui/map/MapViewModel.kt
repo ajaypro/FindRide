@@ -7,13 +7,20 @@ import com.deepak.mytaxi.data.model.Vehicle
 
 class MapViewModel: ViewModel() {
 
-    var _refreshVehicle: MutableLiveData<Vehicle> = MutableLiveData()
+    /**
+     * Livedata to get last selected vehcile to display in map
+     */
+
+    private var _refreshVehicle: MutableLiveData<Vehicle> = MutableLiveData()
 
     val refreshVehicle: LiveData<Vehicle> = _refreshVehicle
 
+    /**
+     * Handling the click event functionality of selected vehicle in viewmodel that updates livedata
+     * @param vehicle - current selected vehicle.
+     */
 
     fun onSelectedVehicle(vehicle: Vehicle){
         _refreshVehicle.value = vehicle
-        vehicle.coordinate
     }
 }

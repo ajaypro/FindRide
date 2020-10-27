@@ -22,8 +22,6 @@ class TaxiFragment : Fragment() {
 
     var taxiList: ArrayList<Vehicle>? = null
 
-    var taxiLocation: String? = null
-
     companion object {
 
         const val TAG = "TaxiFragment"
@@ -42,7 +40,6 @@ class TaxiFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
 
-        (activity as MainActivity).setActionBar(getString(R.string.taxi))
 
         vehicleListAdapter = VehicleListAdapter( VehicleClickListener { vehicle ->
 
@@ -72,9 +69,4 @@ class TaxiFragment : Fragment() {
 
     }
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//
-//
-//    }
 }

@@ -40,7 +40,6 @@ class PoolFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
 
-        (activity as MainActivity).setActionBar(getString(R.string.pool))
 
         vehicleListAdapter = VehicleListAdapter( VehicleClickListener { vehicle ->
 
@@ -69,17 +68,4 @@ class PoolFragment : Fragment() {
         }
     }
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//
-//
-//
-//    }
-
-//    fun navigateToMap(vehicle: Vehicle) {
-//         val bundle = Bundle()
-//        val mapFragment = MapsFragment()
-//        bundle.putParcelable(VEHICLEDATA, vehicle)
-//        mapFragment.arguments = bundle
-//    }
 }

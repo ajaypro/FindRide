@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 class MainViewModel(private val vehicleRepository: VehicleRepository): ViewModel() {
 
     /**
-     * Livedata for Navigation
+     * Livedata for Navigation based on bottom navigation selection
      */
 
     val taxiNavigation =  MutableLiveData<Event<Boolean>>()
@@ -20,6 +20,11 @@ class MainViewModel(private val vehicleRepository: VehicleRepository): ViewModel
     val mapNavigation = MutableLiveData<Event<Boolean>>()
 
     val navigateToMapFragment: MutableLiveData<Event<Boolean>> = MutableLiveData()
+
+    /**
+     * livedata that gets updated from pool and taxi fragment when a vehicle is selected from RV to
+     * display on map
+     */
     val selectedVehicle: MutableLiveData<Event<Vehicle>> = MutableLiveData()
 
     fun onNavigateToMap() {
