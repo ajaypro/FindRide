@@ -22,6 +22,9 @@ import com.deepak.mytaxi.utils.KeyConstants.POOL
 import com.deepak.mytaxi.utils.KeyConstants.TAXI
 import com.deepak.mytaxi.utils.Status
 import com.deepak.mytaxi.utils.getLocation
+import com.deepak.mytaxi.utils.network.ConnectionType
+import com.deepak.mytaxi.utils.network.NetworkUtil
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.progress_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -36,15 +39,58 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var vehicleAddress: ArrayList<Vehicle>
 
+    lateinit var networkMonitor: NetworkUtil
+
     var activeFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_main)
-        setupViewModel()
-        setUpObservers()
+
+        networkMonitor = NetworkUtil(this)
+
+        networkMonitor.result = { isAvailable, type ->
+            runOnUiThread {
+                when (isAvailable) {
+                    true -> {
+                        when (type) {
+                            ConnectionType.WIFI -> {
+                                //internet_status.text = "Wifi Connection"
+                                setupViewModel()
+                                setUpObservers()
+                            }
+                            ConnectionType.CELLULAR -> {
+                                //internet_status.text = "Cellular Connection"
+                                setupViewModel()
+                                setUpObservers()
+                            }
+                          else -> {
+
+                          }
+                        }
+                    }
+                    false -> {
+                        Snackbar.make(container, "No Connection", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+
         setupView(savedInstanceState)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkMonitor.register()
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        networkMonitor.unregister()
     }
 
     private fun setupView(savedInstanceState: Bundle?) {
